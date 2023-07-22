@@ -72,7 +72,7 @@ export function AddPatients() {
         ))}
       </ul>
 
-      {/* Add Patient Dialog */}
+
       <Dialog open={openAddDialog} onClose={handleAddClose}>
         <DialogTitle>Add New Patient</DialogTitle>
         <DialogContent>
@@ -108,7 +108,7 @@ export function AddPatients() {
         </DialogActions>
       </Dialog>
 
-      {/* Edit Patient Dialog */}
+
       <Dialog open={openEditDialog} onClose={handleEditClose}>
         <DialogTitle>Edit Patient</DialogTitle>
         <DialogContent>
@@ -144,7 +144,7 @@ export function AddPatients() {
         </DialogActions>
       </Dialog>
 
-      {/* Add Patient Button */}
+
       <Button variant="contained" color="primary" onClick={handleAddClickOpen}>
         Add New Patient
       </Button>
