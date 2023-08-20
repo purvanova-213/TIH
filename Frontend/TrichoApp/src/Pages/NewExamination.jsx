@@ -1,0 +1,281 @@
+import { useCallback, useState } from "react";
+import {
+  Box,
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  CardHeader,
+  FormHelperText,
+  Divider,
+  TextField,
+  Unstable_Grid2 as Grid,
+  Typography,
+  MenuItem,
+} from "@mui/material";
+import { Layout } from "../Components/Dashboard/layout.jsx";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+
+const sections = [
+  {
+    title: "Master Data",
+    fields: [
+      {
+        label: "Patient Record Number",
+        name: "patientRecordNumber",
+        type: "text",
+      },
+      { label: "First Name", name: "firstName", type: "text" },
+      { label: "Last Name", name: "lastName", type: "text" },
+      { label: "Date of Birth", name: "dateOfBirth", type: "date" },
+      { label: "Sex", name: "sex", type: "text" },
+    ],
+  },
+  {
+    title: "Address",
+    fields: [
+      { label: "Address 1", name: "address1", type: "text" },
+      { label: "Address 2", name: "address2", type: "text" },
+      { label: "Pin", name: "pin", type: "text" },
+      { label: "City", name: "city", type: "text" },
+      { label: "State", name: "state", type: "text" },
+    ],
+  },
+  {
+    title: "Medical Information",
+    fields: [
+      { label: "Skin Type", name: "skinType", type: "text" },
+      { label: "Study", name: "study", type: "text" },
+      { label: "Comorbadilies", name: "comorbadilies", type: "text" },
+      { label: "Diet", name: "diet", type: "text" },
+    ],
+  },
+  {
+    title: "Contact",
+    fields: [
+      { label: "Mobile Number", name: "mobileNumber", type: "number" },
+      { label: "Email", name: "email", type: "email" },
+    ],
+  },
+];
+
+export const PatientProfileDetails = () => {
+  const formik = useFormik({
+    initialValues: {
+      patientRecordNumber: "",
+      firstName: "",
+      lastName: "",
+      dateOfBirth: "",
+      sex: "",
+      address1: "",
+      address2: "",
+      pin: "",
+      city: "",
+      state: "",
+      skinType: "",
+      study: "",
+      diet: "",
+      comorbadilies: "",
+      mobileNumber: "",
+      email: "",
+    },
+    validationSchema: Yup.object().shape({
+      patientRecordNumber: Yup.number().required(
+        "Patient Record Number is required"
+      ),
+      firstName: Yup.string().required("First Name is required"),
+      lastName: Yup.string().required("Last Name is required"),
+      dateOfBirth: Yup.date().required("Date of Birth is required"),
+      sex: Yup.string().required("Gender is required"),
+      address1: Yup.string().required("Address 1 is required"),
+      address2: Yup.string(),
+      pin: Yup.string()
+        .required("Pin Code is required")
+        .matches(/^\d{6}$/, "Pin Code must be a 6-digit number"),
+      city: Yup.string().required("City is required"),
+      state: Yup.string().required("State is required"),
+      skinType: Yup.string(),
+      study: Yup.string(),
+      comorbadilies: Yup.string().required("Comorbidities is required"),
+      diet: Yup.string(),
+      mobileNumber: Yup.string()
+        .required("Mobile Number is required")
+        .matches(/^\d{10}$/, "Mobile Number must be a 10-digit number"),
+      email: Yup.string().email("Invalid email").required("Email is required"),
+    }),
+  });
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setValues((prevValues) => ({
+      ...prevValues,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = (values) => {
+    console.log(values);
+  };
+  return (
+    <>
+    <title>New Patient</title>
+      <Layout>
+        <form noValidate onSubmit={formik.handleSubmit}>
+          <Typography
+            sx={{ marginLeft: { xs: 0, lg: 30 }, mb: 3 }}
+            gutterBottom
+            variant="h5"
+            component="div"
+          >
+            New Examination
+          </Typography>
+          <Card sx={{ marginLeft: { xs: 0, lg: 30 } }}>
+            <CardContent sx={{ pt: 0 }}>
+              <Box sx={{ m: -1.5 }}>
+                {sections.map((section) => (
+                  <Box key={section.title} sx={{ mb: 2 }}>
+                    <CardHeader
+                      subheader={`Enter ${section.title} details`}
+                      title={section.title}
+                    />
+                    <Grid container spacing={3}>
+                      {section.fields.map((field) => (
+                        <Grid xs={12} md={6} key={field.name}>
+                          {field.name === "sex" ? (
+                            <TextField
+                              select
+                              fullWidth
+                              label={field.label}
+                              name={field.name}
+                              onChange={formik.handleChange}
+                              onBlur={formik.handleBlur}
+                              required
+                              value={formik.values[field.name]}
+                              error={
+                                formik.touched[field.name] &&
+                                formik.errors[field.name]
+                              }
+                              helperText={
+                                formik.touched[field.name] &&
+                                formik.errors[field.name]
+                              }
+                            >
+                              <MenuItem value="male">Male</MenuItem>
+                              <MenuItem value="female">Female</MenuItem>
+                            </TextField>
+                          ) : field.name === "dateOfBirth" ? ( 
+                          <TextField
+                            fullWidth
+                            label={field.label}
+                            name={field.name}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            required
+                            type={field.type}
+                            value={formik.values[field.name]}
+                            error={
+                              formik.touched[field.name] &&
+                              formik.errors[field.name]
+                            }
+                            helperText={
+                              formik.touched[field.name] &&
+                              formik.errors[field.name]
+                            }
+                            InputLabelProps={{
+                              shrink: true
+                            }}
+
+                          />
+                        ) : field.name === "comorbadilies" ? (
+                            <TextField
+                              select
+                              fullWidth
+                              label={field.label}
+                              name={field.name}
+                              onChange={formik.handleChange}
+                              onBlur={formik.handleBlur}
+                              required
+                              value={formik.values[field.name]}
+                              error={
+                                formik.touched[field.name] &&
+                                formik.errors[field.name]
+                              }
+                              helperText={
+                                formik.touched[field.name] &&
+                                formik.errors[field.name]
+                              }
+                            >
+                              <MenuItem value="anaemia">Anaemia</MenuItem>
+                              <MenuItem value="hypothyroidism">
+                                Hypothyroidism
+                              </MenuItem>
+                              <MenuItem value="hyperthyroidism">
+                                Hyperthyroidism
+                              </MenuItem>
+                              <MenuItem value="pcos">PCOS</MenuItem>
+                              <MenuItem value="diabetes">Diabetes</MenuItem>
+                              <MenuItem value="hodiseases">
+                                H/O Diseases
+                              </MenuItem>
+                            </TextField>
+                          ) : field.name === "diet" ? (
+                            <TextField
+                              select
+                              fullWidth
+                              label={field.label}
+                              name={field.name}
+                              onChange={formik.handleChange}
+                              onBlur={formik.handleBlur}
+                              required
+                              value={formik.values[field.name]}
+                              error={
+                                formik.touched[field.name] &&
+                                formik.errors[field.name]
+                              }
+                              helperText={
+                                formik.touched[field.name] &&
+                                formik.errors[field.name]
+                              }
+                            >
+                              <MenuItem value="veg">Vegetarian</MenuItem>
+                              <MenuItem value="nonveg">Non-Vegetarian</MenuItem>
+                            </TextField>
+                          ) : (
+                            <TextField
+                              fullWidth
+                              label={field.label}
+                              name={field.name}
+                              onChange={formik.handleChange}
+                              onBlur={formik.handleBlur}
+                              required
+                              type={field.type}
+                              value={formik.values[field.name]}
+                              error={
+                                formik.touched[field.name] &&
+                                formik.errors[field.name]
+                              }
+                              helperText={
+                                formik.touched[field.name] &&
+                                formik.errors[field.name]
+                              }
+                            />
+                          )}
+                        </Grid>
+                      ))}
+                    </Grid>
+                  </Box>
+                ))}
+              </Box>
+            </CardContent>
+            <CardActions sx={{ justifyContent: "flex-end" }}>
+              <Button type="submit" variant="contained">
+                Save details
+              </Button>
+            </CardActions>
+          </Card>
+        </form>
+      </Layout>
+    </>
+  );
+};

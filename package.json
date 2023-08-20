@@ -1,9 +1,15 @@
 {
   "dependencies": {
+    "@mui/lab": "^5.0.0-alpha.140",
     "apexcharts": "^3.41.0",
+    "date-fns": "^2.30.0",
+    "file-saver": "^2.0.5",
+    "firebase": "^10.2.0",
+    "formik": "^2.4.3",
     "react-apexcharts": "^1.4.1",
     "react-image-file-resizer": "^0.4.8",
     "react-redux": "^8.1.1",
-    "redux": "^4.2.1"
+    "redux": "^4.2.1",
+    "yup": "^1.2.0"
   }
 }
