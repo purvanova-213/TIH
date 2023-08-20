@@ -9,7 +9,7 @@ import {
   Typography,
   Avatar,
 } from "@mui/material";
-import DocImage from "../assets/images/docImg.jpg";
+import DocImage from "../assets/Images/docImg.jpg";
 import { Layout } from "../Components/Dashboard/layout.jsx";
 
 const doctor = {
