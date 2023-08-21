@@ -14,8 +14,10 @@ import {
   MenuItem,
 } from "@mui/material";
 import { Layout } from "../Components/Dashboard/layout.jsx";
+import { app } from "./../config/firebase.js";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { getFirestore, collection, addDoc } from "firebase/firestore";
 
 const sections = [
   {
@@ -61,6 +63,7 @@ const sections = [
 ];
 
 export const PatientProfileDetails = () => {
+  const db = getFirestore(app);
   const formik = useFormik({
     initialValues: {
       patientRecordNumber: "",
@@ -104,6 +107,39 @@ export const PatientProfileDetails = () => {
         .matches(/^\d{10}$/, "Mobile Number must be a 10-digit number"),
       email: Yup.string().email("Invalid email").required("Email is required"),
     }),
+    onSubmit: async (values, { setSubmitting }) => {
+      const now = new Date();
+      try {
+        const result = await addDoc(collection(db, "patient"), {
+          patientRecordNumber: values.patientRecordNumber,
+          firstName: values.firstName,
+          lastName: values.lastName,
+          dateOfBirth: values.dateOfBirth,
+          sex: values.sex,
+          address1: values.address1,
+          address2: values.address2,
+          pin: values.pin,
+          city: values.city,
+          state: values.state,
+          skinType: values.skinType,
+          study: values.study,
+          diet: values.diet,
+          comorbadilies: values.comorbadilies,
+          mobileNumber: values.mobileNumber,
+          email: values.email,
+          createdAt: now,
+          updatedAt: now,
+          status: "Active", 
+    
+        });
+
+        console.log("Document written with ID: ", result.id);
+      } catch (error) {
+        console.error("Error adding document: ", error);
+      } finally {
+        setSubmitting(false);
+      }
+    },
   });
 
   const handleChange = (event) => {
@@ -114,12 +150,9 @@ export const PatientProfileDetails = () => {
     }));
   };
 
-  const handleSubmit = (values) => {
-    console.log(values);
-  };
   return (
     <>
-    <title>New Patient</title>
+      <title>New Patient</title>
       <Layout>
         <form noValidate onSubmit={formik.handleSubmit}>
           <Typography
@@ -154,7 +187,7 @@ export const PatientProfileDetails = () => {
                               value={formik.values[field.name]}
                               error={
                                 formik.touched[field.name] &&
-                                formik.errors[field.name]
+                                Boolean(formik.errors[field.name])
                               }
                               helperText={
                                 formik.touched[field.name] &&
@@ -164,30 +197,29 @@ export const PatientProfileDetails = () => {
                               <MenuItem value="male">Male</MenuItem>
                               <MenuItem value="female">Female</MenuItem>
                             </TextField>
-                          ) : field.name === "dateOfBirth" ? ( 
-                          <TextField
-                            fullWidth
-                            label={field.label}
-                            name={field.name}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            required
-                            type={field.type}
-                            value={formik.values[field.name]}
-                            error={
-                              formik.touched[field.name] &&
-                              formik.errors[field.name]
-                            }
-                            helperText={
-                              formik.touched[field.name] &&
-                              formik.errors[field.name]
-                            }
-                            InputLabelProps={{
-                              shrink: true
-                            }}
-
-                          />
-                        ) : field.name === "comorbadilies" ? (
+                          ) : field.name === "dateOfBirth" ? (
+                            <TextField
+                              fullWidth
+                              label={field.label}
+                              name={field.name}
+                              onChange={formik.handleChange}
+                              onBlur={formik.handleBlur}
+                              required
+                              type={field.type}
+                              value={formik.values[field.name]}
+                              error={
+                                formik.touched[field.name] &&
+                                Boolean(formik.errors[field.name])
+                              }
+                              helperText={
+                                formik.touched[field.name] &&
+                                formik.errors[field.name]
+                              }
+                              InputLabelProps={{
+                                shrink: true,
+                              }}
+                            />
+                          ) : field.name === "comorbadilies" ? (
                             <TextField
                               select
                               fullWidth
@@ -199,7 +231,7 @@ export const PatientProfileDetails = () => {
                               value={formik.values[field.name]}
                               error={
                                 formik.touched[field.name] &&
-                                formik.errors[field.name]
+                                Boolean(formik.errors[field.name])
                               }
                               helperText={
                                 formik.touched[field.name] &&
@@ -231,7 +263,7 @@ export const PatientProfileDetails = () => {
                               value={formik.values[field.name]}
                               error={
                                 formik.touched[field.name] &&
-                                formik.errors[field.name]
+                                Boolean(formik.errors[field.name])
                               }
                               helperText={
                                 formik.touched[field.name] &&
@@ -253,7 +285,7 @@ export const PatientProfileDetails = () => {
                               value={formik.values[field.name]}
                               error={
                                 formik.touched[field.name] &&
-                                formik.errors[field.name]
+                                Boolean(formik.errors[field.name])
                               }
                               helperText={
                                 formik.touched[field.name] &&

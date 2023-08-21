@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Button,
@@ -31,6 +31,8 @@ import UpgradeIcon from "@mui/icons-material/Upgrade";
 import AddIcon from "@mui/icons-material/Add";
 import SearchIcon from "@mui/icons-material/Search";
 import { Hidden } from "@mui/material";
+import { getFirestore, collection, getDocs } from "firebase/firestore";
+import { app } from "./../config/firebase.js";
 
 const data = [
   {
@@ -141,6 +143,29 @@ export const AllPatients = () => {
     const [selected, setSelected] = useState([]);
     const [filterName, setFilterName] = useState("");
     const [open, setOpen] = useState(null);
+    const [fetchedData, setFetchedData] = useState([]);
+
+    useEffect(() => {
+      const fetchData = async () => {
+        const db = getFirestore(app);
+        const patientsCollection = collection(db, "patient");
+    
+        try {
+          const querySnapshot = await getDocs(patientsCollection);
+          const fetchedPatients = [];
+          querySnapshot.forEach((doc) => {
+            fetchedPatients.push(doc.data());
+          });
+          setFetchedData(fetchedPatients);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      };
+    
+      fetchData();
+    }, []);
+    
+    
   
     const handleOpenMenu = (event) => {
       setOpen(event.currentTarget);
@@ -238,9 +263,9 @@ export const AllPatients = () => {
           display: "inline-block",
         };
     };
-    const filteredData = data.filter((row) =>
-      row.firstName.toLowerCase().includes(filterName.toLowerCase())
-    );
+    const filteredData = fetchedData.filter((row) =>
+  row.firstName.toLowerCase().includes(filterName.toLowerCase())
+);
   
     const emptyRows =
       rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
@@ -343,41 +368,41 @@ export const AllPatients = () => {
                         )
                         .map((row) => {
                           const {
-                            id,
+                            patientRecordNumber,
                             firstName,
                             lastName,
                             email,
-                            contact,
+                            mobileNumber,
                             city,
                             study,
                             status,
                           } = row;
-                          const isSelected = selected.indexOf(id) !== -1;
+                          const isSelected = selected.indexOf(patientRecordNumber) !== -1;
                           const statusStyle = getStatusStyle(status);
   
                           return (
                             <TableRow
                               hover
-                              onClick={(event) => handleClick(event, id)}
+                              onClick={(event) => handleClick(event, patientRecordNumber)}
                               tabIndex={-1}
-                              key={id}
+                              key={patientRecordNumber}
                             >
                               <TableCell padding="checkbox">
                                 <Checkbox checked={isSelected} />
                               </TableCell>
-                              <TableCell>{id}</TableCell>
+                              <TableCell>{patientRecordNumber}</TableCell>
                               <TableCell>{firstName}</TableCell>
                               <TableCell>{lastName}</TableCell>
                               <TableCell>{email}</TableCell>
-                              <TableCell>{contact}</TableCell>
+                              <TableCell>{mobileNumber}</TableCell>
                               <TableCell>{city}</TableCell>
                               <TableCell>{study}</TableCell>
                               <TableCell style={statusStyle} >{status}</TableCell>
                               <TableCell>
                                 <IconButton
-                                  aria-owns={open ? `popover-${id}` : undefined}
+                                  aria-owns={open ? `popover-${patientRecordNumber}` : undefined}
                                   aria-haspopup="true"
-                                  onClick={(event) => handleOpenMenu(event, id)}
+                                  onClick={(event) => handleOpenMenu(event, patientRecordNumber)}
                                 >
                                   <MoreVertIcon />
                                 </IconButton>
