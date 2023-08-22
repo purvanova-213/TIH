@@ -46,7 +46,7 @@ export const SideNav = (props) => {
 
         <Divider sx={{ borderColor: 'neutral.700' }} />
 
-        <Box component="nav" sx={{ flexGrow: 1, px: 2, py: 3 }}>
+        <Box component="nav" sx={{ flexGrow: 1, px: 2, py: 3, mt: 5 }}>
           <Stack component="ul" spacing={0.5} sx={{ listStyle: 'none', p: 0, m: 0 }}>
             {items.map((item) => {
               const active = item.path ? pathname === item.path : false;

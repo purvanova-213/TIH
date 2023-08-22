@@ -34,109 +34,6 @@ import { Hidden } from "@mui/material";
 import { getFirestore, collection, getDocs } from "firebase/firestore";
 import { app } from "./../config/firebase.js";
 
-const data = [
-  {
-    id: "1",
-    firstName: "John",
-    lastName: "Doe",
-    email: "john.doe@example.com",
-    contact: "123-456-7890",
-    city: "New York",
-    study: "Study A",
-    status: "Active",
-  },
-  {
-    id: "2",
-    firstName: "Jane",
-    lastName: "Smith",
-    email: "jane.smith@example.com",
-    contact: "987-654-3210",
-    city: "Los Angeles",
-    study: "Study B",
-    status: "Pending",
-  },
-  {
-    id: "3",
-    firstName: "Michael",
-    lastName: "Johnson",
-    email: "michael.johnson@example.com",
-    contact: "555-555-5555",
-    city: "Chicago",
-    study: "Study C",
-    status: "Inactive",
-  },
-  {
-    id: "4",
-    firstName: "Emily",
-    lastName: "Brown",
-    email: "emily.brown@example.com",
-    contact: "333-333-3333",
-    city: "Houston",
-    study: "Study A",
-    status: "Active",
-  },
-  {
-    id: "5",
-    firstName: "William",
-    lastName: "Jones",
-    email: "william.jones@example.com",
-    contact: "777-777-7777",
-    city: "Miami",
-    study: "Study D",
-    status: "Pending",
-  },
-  {
-    id: "6",
-    firstName: "Olivia",
-    lastName: "Miller",
-    email: "olivia.miller@example.com",
-    contact: "888-888-8888",
-    city: "Seattle",
-    study: "Study B",
-    status: "Active",
-  },
-  {
-    id: "7",
-    firstName: "James",
-    lastName: "Davis",
-    email: "james.davis@example.com",
-    contact: "222-222-2222",
-    city: "Dallas",
-    study: "Study C",
-    status: "Inactive",
-  },
-  {
-    id: "8",
-    firstName: "Sophia",
-    lastName: "Wilson",
-    email: "sophia.wilson@example.com",
-    contact: "444-444-4444",
-    city: "San Francisco",
-    study: "Study D",
-    status: "Active",
-  },
-  {
-    id: "9",
-    firstName: "Liam",
-    lastName: "Taylor",
-    email: "liam.taylor@example.com",
-    contact: "666-666-6666",
-    city: "Boston",
-    study: "Study A",
-    status: "Pending",
-  },
-  {
-    id: "10",
-    firstName: "Emma",
-    lastName: "Anderson",
-    email: "emma.anderson@example.com",
-    contact: "999-999-9999",
-    city: "Phoenix",
-    study: "Study B",
-    status: "Active",
-  },
-];
-
 export const AllPatients = () => {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -268,7 +165,7 @@ export const AllPatients = () => {
 );
   
     const emptyRows =
-      rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
+      rowsPerPage - Math.min(rowsPerPage, filteredData.length - page * rowsPerPage);
 
      
   
@@ -341,10 +238,10 @@ export const AllPatients = () => {
                         <TableCell padding="checkbox">
                           <Checkbox
                             indeterminate={
-                              selected.length > 0 && selected.length < data.length
+                              selected.length > 0 && selected.length < filteredData.length
                             }
                             checked={
-                              selected.length === data.length && data.length > 0
+                              selected.length === filteredData.length && filteredData.length > 0
                             }
                             onChange={handleSelectAllClick}
                             inputProps={{ "aria-label": "select all desserts" }}

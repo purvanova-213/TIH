@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useState, useEffect } from "react";
 import {
   Box,
   Button,
@@ -17,7 +17,14 @@ import { Layout } from "../Components/Dashboard/layout.jsx";
 import { app } from "./../config/firebase.js";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { getFirestore, collection, addDoc } from "firebase/firestore";
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  getDocs,
+  query,
+  where,
+} from "firebase/firestore";
 
 const sections = [
   {
@@ -63,7 +70,16 @@ const sections = [
 ];
 
 export const PatientProfileDetails = () => {
+  const [totalPatients, setTotalPatients] = useState(0);
   const db = getFirestore(app);
+  useEffect(() => {
+    const fetchTotalPatients = async () => {
+      const querySnapshot = await getDocs(collection(db, "patient"));
+      setTotalPatients(querySnapshot.docs.length);
+    };
+    fetchTotalPatients();
+  }, [db]);
+
   const formik = useFormik({
     initialValues: {
       patientRecordNumber: "",
@@ -129,9 +145,12 @@ export const PatientProfileDetails = () => {
           email: values.email,
           createdAt: now,
           updatedAt: now,
-          status: "Active", 
-    
+          status: "Active",
         });
+
+        useEffect(() => {
+          formik.setFieldValue("patientRecordNumber", totalPatients + 1, false);
+        }, [totalPatients, formik]);
 
         console.log("Document written with ID: ", result.id);
       } catch (error) {
@@ -141,6 +160,15 @@ export const PatientProfileDetails = () => {
       }
     },
   });
+
+  useEffect(() => {
+    if (totalPatients > 0) {
+      formik.setValues({
+        ...formik.values,
+        patientRecordNumber: totalPatients + 1,
+      });
+    }
+  }, [totalPatients, formik]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -273,6 +301,27 @@ export const PatientProfileDetails = () => {
                               <MenuItem value="veg">Vegetarian</MenuItem>
                               <MenuItem value="nonveg">Non-Vegetarian</MenuItem>
                             </TextField>
+                          ) : field.name === "patientRecordNumber" ? (
+                            <TextField
+                              fullWidth
+                              label="Patient Record Number"
+                              name="patientRecordNumber"
+                              onChange={formik.handleChange}
+                              onBlur={formik.handleBlur}
+                              required
+                              InputProps={{
+                                readOnly: true, 
+                              }}
+                              value={formik.values.patientRecordNumber}
+                              error={
+                                formik.touched.patientRecordNumber &&
+                                Boolean(formik.errors.patientRecordNumber)
+                              }
+                              helperText={
+                                formik.touched.patientRecordNumber &&
+                                formik.errors.patientRecordNumber
+                              }
+                            />
                           ) : (
                             <TextField
                               fullWidth
